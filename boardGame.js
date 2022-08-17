@@ -46,17 +46,18 @@ class BoardGame{
     }
 
     renderOneSquare(i, j, svg=null) {
-        this.context.beginPath();
-        this.context.fillRect(
-            i*SQUARE_SIZE,
-            j*SQUARE_SIZE,
-            SQUARE_SIZE,
-            SQUARE_SIZE
-        )
         if(svg){
-            this.context.drawImage(svg, i, j, 1, 1)
+            this.context.drawImage(svg, i, j, 100, 100)
+        } else {
+            this.context.beginPath();
+            this.context.fillRect(
+                i*SQUARE_SIZE,
+                j*SQUARE_SIZE,
+                SQUARE_SIZE,
+                SQUARE_SIZE
+            )
+            this.context.stroke()
         }
-        this.context.stroke()
     }
 
     renderBoard() {
