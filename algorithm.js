@@ -19,13 +19,40 @@ function createSVGAndReturnBlob(url) {
     })
 }
 
+function createQueens(svg, max){
+    const queens = []
 
+    for(let i=0; i<max; i+=1){
+       queens.push(new ChessQueen(svg, `Rainha (${i})`))
+    }
+
+    return queens
+}
+
+function distributeQueen(queens = []){
+    let i=0;
+    let j =0;
+
+    while(queens){
+        const queen = queens.shift()
+
+        board.addNewPiece(i, j, queen)
+
+        i+=0; j+=1
+    }
+
+    // for (i = 0; i < queens.length; i++) {
+    //     for (j = 0; j < queens.length; j++) {
+    //         board.addNewPiece(i, j, queens[i])
+    //     } 
+    // }
+}
 
 async function startAlgorithm() {
     const queenSvgUrl = "http://localhost:5500/static/svgs/queen.svg"
     const queenSvg = await createSVGAndReturnBlob(queenSvgUrl)
+    const queens = createQueens(queenSvg, 8)
 
-    const queen1 = new ChessQueen(queenSvg, 'Rainha teste 1')
-    board.addNewPiece(0, 0, queen1)
+    distributeQueen(queens)
 
 }
