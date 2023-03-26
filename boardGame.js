@@ -27,15 +27,29 @@ class BoardGame{
         this.setBoardSize(BOARD_WIDTH_SIZE, BOARD_HEIGHT_SIZE)
         this.pieces = this.generateBoardArray()
         this.blockedPositions =[]
+        this.sizes = {
+            widthSquares: BOARD_WIDTH_AMOUNT,
+            heightSquares: BOARD_HEIGHT_AMOUNT
+        }
     }
 
     addNewPiece(i, j, piece){
+        if(!piece || typeof piece !== 'object' || (i === undefined || i === null) || (j ===undefined || j === null)) throw new Error('You must provide correct values')
         if(this.pieces[i][j] !== null) throw new Error("There is already another piece in this position")
         this.pieces[i][j] = piece
         
         this.reRenderPosition(i, j)
     }
     
+    removePiece(i, j) {
+        if(!Number.isInteger(i) || !Number.isInteger(j)) throw new Error('You must provide positive numbers')
+        const removedPiece = this.pieces[i][j]
+        this.pieces[i][j] = null
+        this.reRenderPosition(i, j)
+
+        return removedPiece
+    }
+
     generateBoardArray(){
         let pieces = []
         for(let i = 0; i< BOARD_HEIGHT_AMOUNT; i+=1) {
@@ -61,34 +75,41 @@ class BoardGame{
 
     renderOneSquare(i, j, svg=null) {
         const ctx = this.context
-        if(svg){
-            if (i%2 == 0){
+
+        if (i%2 == 0){
                 
-                if(j%2 == 0){
-                    ctx.filter = DEFAULT_FILTER
-                } else {
-                    ctx.filter = INVERTED_FILTER
-                }
+            if(j%2 == 0){
+                ctx.filter = DEFAULT_FILTER
+                ctx.fillStyle = 'white'
             } else {
-                
-                if(j%2 == 0){
-                    ctx.filter = INVERTED_FILTER
-                } else {
-                    ctx.filter = DEFAULT_FILTER
-                }
-                
+                ctx.filter = INVERTED_FILTER
+                ctx.fillStyle = 'black'
             }
+        } else {
+            
+            if(j%2 == 0){
+                ctx.filter = INVERTED_FILTER
+                ctx.fillStyle = 'black'
+            } else {
+                ctx.filter = DEFAULT_FILTER
+                ctx.fillStyle = 'white'
+            }
+            
+        }
+
+        if(svg){
             
             // Reset Global composite Operation
             ctx.globalCompositeOperation = "source-over"
-            ctx.drawImage(svg, i*SQUARE_SIZE+CENTER_FACTOR, j*SQUARE_SIZE+CENTER_FACTOR, PIECE_SIZE, PIECE_SIZE)
+            ctx.drawImage(svg, j*SQUARE_SIZE+CENTER_FACTOR, i*SQUARE_SIZE+CENTER_FACTOR, PIECE_SIZE, PIECE_SIZE)
             
         } else {
+            ctx.filter = 'none'
+            ctx.globalCompositeOperation = "source-over"
             ctx.beginPath();
-            ctx.fillStyle = 'black'
             ctx.fillRect(
-                i*SQUARE_SIZE,
                 j*SQUARE_SIZE,
+                i*SQUARE_SIZE,
                 SQUARE_SIZE,
                 SQUARE_SIZE
             )
@@ -107,7 +128,7 @@ class BoardGame{
 
     reRenderPosition(i, j) {
         const selectedPiece = this.pieces[i][j];
-        this.renderOneSquare(i, j, selectedPiece.svg)
+        this.renderOneSquare(i, j, selectedPiece?.svg)
     }
 }
 

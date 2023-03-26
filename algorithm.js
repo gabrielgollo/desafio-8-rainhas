@@ -37,8 +37,13 @@ function distributeQueen(queens = []){
         const queen = queens.shift()
 
         board.addNewPiece(i, j, queen)
+        
+        if(j == board.sizes.widthSquares) {
+            i+=1
+            j=0;
+        }
 
-        i+=0; j+=1
+        j+=1
     }
 
     // for (i = 0; i < queens.length; i++) {
@@ -48,10 +53,12 @@ function distributeQueen(queens = []){
     // }
 }
 
+
+
 async function startAlgorithm() {
     const queenSvgUrl = "http://localhost:5500/static/svgs/queen.svg"
     const queenSvg = await createSVGAndReturnBlob(queenSvgUrl)
-    const queens = createQueens(queenSvg, 8)
+    const queens = createQueens(queenSvg, 12)
 
     distributeQueen(queens)
 
